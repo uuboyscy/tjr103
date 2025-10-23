@@ -8,6 +8,9 @@ Hello,uuboy
 - [Data Pipeline 課堂筆記（2025/10/03 下午）](docs/Tibame%2020251003%20datapipeline%20afternoon.md)
 - [Data Pipeline 課堂筆記（2025/10/03 夜間）](docs/Tibame%2020251003%20datapipeline%20night.md)
 - [Data Pipeline 課堂筆記（2025/10/08 夜間）](docs/Tibame%2020251008%20datapipeline%20night.md)
+- [Data Pipeline 課堂筆記（2025/10/18 上午）](docs/Tibame%2020251018%20datapipeline%20morning.md)
+- [Data Pipeline 課堂筆記（2025/10/18 下午）](docs/Tibame%2020251018%20datapipeline%20afternoon.md)
+- [Data Pipeline 課堂筆記（2025/10/22 夜間）](docs/Tibame%2020251022%20datapipeline%20night.md)
 
 ## Quick Notes (2025/10/03)
 
