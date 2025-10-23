@@ -53,3 +53,16 @@ Hello,uuboy
    4. Select Python interpreter on VSCode
       1. Windows: ctrl + shift + P
       2. Mac: command + shift + P
+
+## Quick Notes (2025/10/18)
+
+### REST API | CRUD
+1. Create → insert → `POST`
+2. Read → select → `GET`
+3. Update → update → `UPDATE`
+4. Delete → delete → `DELETE`
+
+### Environment | MySQL
+```bash
+docker run -d --name mysql-local -e MYSQL_ROOT_PASSWORD=pasword -p 3306:3306 mysql:8
+```
