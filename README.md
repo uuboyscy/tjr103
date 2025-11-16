@@ -1,4 +1,3 @@
-Hello,uuboy
 # TJR103
 
 ## Lecture Notes
