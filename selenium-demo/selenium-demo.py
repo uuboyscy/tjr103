@@ -1,4 +1,6 @@
 """
+Default password for UI: secret
+
 # For Mac / Linux
 docker run -it -d \
   --platform linux/amd64 \
@@ -49,7 +51,8 @@ chrome_options.add_argument("--allow-insecure-localhost")  # permit self-signed 
 # chrome_options.add_argument("--headless=new")  # uncomment if you don't need a visible browser
 
 driver = webdriver.Remote(
-    command_executor="http://127.0.0.1:14444/wd/hub",
+    # command_executor="http://127.0.0.1:14444/wd/hub",
+    command_executor="https://standalone-chrome-30300274673.asia-east1.run.app/wd/hub",
     options=chrome_options,
 )
 
