@@ -1,0 +1,127 @@
+services:
+  ssh_fs:
+    build:
+      context: ./docker
+      dockerfile: ssh_fs.Dockerfile
+    platform: linux/amd64
+    container_name: ssh_fs
+    ports:
+      - "2222:22"
+    volumes:
+      - ./include/jsonnet:/root/workspace/jsonnet
+      - ./include/airflow:/root/workspace/airflow
+      - ./include/gpload3.py:/root/gpload3.py:ro
+      - ./Data:/data
+      - greenplum_shared_data:/usr/local/greenplum-db-6.12.1
+
+  postgres:
+    image: postgres:15
+    container_name: airflow-postgres
+    environment:
+      POSTGRES_USER: airflow
+      POSTGRES_PASSWORD: airflow
+      POSTGRES_DB: airflow
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U airflow -d airflow"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  etl-gp:
+    image: datagrip/greenplum:6.8
+    container_name: etl-greenplum
+    environment:
+      - GP_USER=tester
+      - GP_PASSWORD=pivotal
+      - GP_DB=testdb
+    volumes:
+      - greenplum_data:/data
+      - greenplum_shared_data:/opt/greenplum-db-6.8.1
+    ports:
+      - "5434:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "timeout 2 bash -c '</dev/tcp/localhost/5432' || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 90s
+
+  airflow-init:
+    build:
+      context: ./docker
+      dockerfile: airflow.Dockerfile
+    depends_on:
+      postgres:
+        condition: service_healthy
+      etl-gp:
+        condition: service_healthy
+    environment:
+      AIRFLOW__CORE__EXECUTOR: LocalExecutor
+      # NOTE: use new [database] key instead of deprecated [core]
+      AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@postgres:5432/airflow
+      AIRFLOW__DATABASE__LOAD_DEFAULT_CONNECTIONS: "False"
+      PYTHONPATH: /opt/airflow:/opt/airflow/utils
+    volumes:
+      - ./dags:/opt/airflow/dags
+      - ./utils:/opt/airflow/utils
+      - ./data:/opt/airflow/data
+      - ./logs:/opt/airflow/logs
+      - ./include:/opt/airflow/include
+    command: ["bash", "-c", "airflow db migrate && airflow variables import /opt/airflow/include/airflow_variables.json && airflow connections add ssh_fs --conn-uri ssh://root:password@ssh_fs:22 && airflow users create --username admin --password admin --firstname Admin --lastname User --role Admin --email admin@example.com || true"]
+
+  airflow-webserver:
+    build:
+      context: ./docker
+      dockerfile: airflow.Dockerfile
+    depends_on:
+      postgres:
+        condition: service_healthy
+      airflow-init:
+        condition: service_completed_successfully
+      etl-gp:
+        condition: service_healthy
+    environment:
+      AIRFLOW__CORE__EXECUTOR: LocalExecutor
+      AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@postgres:5432/airflow
+      PYTHONPATH: /opt/airflow:/opt/airflow/utils
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./dags:/opt/airflow/dags
+      - ./utils:/opt/airflow/utils
+      - ./data:/opt/airflow/data
+      - ./logs:/opt/airflow/logs
+      - ./include:/opt/airflow/include
+    command: webserver
+
+  airflow-scheduler:
+    build:
+      context: ./docker
+      dockerfile: airflow.Dockerfile
+    depends_on:
+      postgres:
+        condition: service_healthy
+      airflow-init:
+        condition: service_completed_successfully
+      etl-gp:
+        condition: service_healthy
+    environment:
+      AIRFLOW__CORE__EXECUTOR: LocalExecutor
+      AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@postgres:5432/airflow
+      PYTHONPATH: /opt/airflow:/opt/airflow/utils
+    volumes:
+      - ./dags:/opt/airflow/dags
+      - ./utils:/opt/airflow/utils
+      - ./data:/opt/airflow/data
+      - ./logs:/opt/airflow/logs
+      - ./include:/opt/airflow/include
+    command: scheduler
+
+volumes:
+  postgres-data:
+  greenplum_data:
+  greenplum_shared_data:
