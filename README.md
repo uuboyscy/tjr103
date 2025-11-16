@@ -16,6 +16,7 @@
 - [GCP 課堂筆記（2025/11/02 下午）](docs/Tibame%2020251102%20gcp%20afternoon.md)
 - [GCP 課堂筆記（2025/11/08 上午）](docs/Tibame%2020251108%20gcp%20morning.md)
 - [GCP 課堂筆記（2025/11/08 下午）](docs/Tibame%2020251108%20gcp%20afternoon.md)
+- [GCP 課堂筆記（2025/11/16 上午）](docs/tibame_20251116_gcp_morning.md)
 
 ## Quick Notes (2025/10/03)
 
