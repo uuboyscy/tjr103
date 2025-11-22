@@ -17,6 +17,7 @@
 - [GCP 課堂筆記（2025/11/08 上午）](docs/Tibame%2020251108%20gcp%20morning.md)
 - [GCP 課堂筆記（2025/11/08 下午）](docs/Tibame%2020251108%20gcp%20afternoon.md)
 - [GCP 課堂筆記（2025/11/16 上午）](docs/tibame_20251116_gcp_morning.md)
+- [GCP 課堂筆記（2025/11/22 上午）](docs/Tibame_20251122_GCP_morning.md)
 
 ## Quick Notes (2025/10/03)
 
@@ -322,3 +323,12 @@ gcloud secrets versions access latest --secret=tjr103-secret
   - Secret Manager Viewer
 - artifact-registry-user
   - Artifact Registry Administrator
+
+## Quick Notes (2025/11/08)
+
+### BigQuery Remote Function
+- Follow the URL to create remote function
+https://cloud.google.com/bigquery/docs/remote-functions#console
+1. Create Cloud Run Function
+2. Create BigQuery connection
+3. Create Remote Function on BigQuery
